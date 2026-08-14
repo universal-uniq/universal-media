@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal Media — GitHub Pages</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #eee; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+    body.light { background: #f0eeff; color: #1a1a2e; }
+    ::-webkit-scrollbar { width: 8px; background: #1a0b2e; }
+    ::-webkit-scrollbar-thumb { background: #7c3aed; border-radius: 12px; }
+    body.light ::-webkit-scrollbar { background: #d0c8f0; }
+    body.light ::-webkit-scrollbar-thumb { background: #7c3aed; }
+
+    .app { max-width: 1300px; margin: 0 auto; padding: 1rem 1.5rem 2rem; }
+    /* glass */
+    .glass { background: rgba(18, 18, 30, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(124, 58, 237, 0.35); border-radius: 2rem; box-shadow: 0 12px 40px rgba(0,0,0,0.6); padding: 1.5rem 2rem; transition: 0.3s; }
+    body.light .glass { background: rgba(240, 238, 255, 0.7); border-color: rgba(124, 58, 237, 0.4); box-shadow: 0 8px 30px rgba(100, 60, 200, 0.15); }
+
+    header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .logo { font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #c084fc, #7c3aed, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px; }
+    .logo span { font-size: 2.2rem; -webkit-text-fill-color: initial; }
+
+    .theme-toggle { background: rgba(255,255,255,0.05); border: 1px solid rgba(124, 58, 237, 0.3); border-radius: 40px; padding: 0.3rem 1rem; cursor: pointer; font-size: 1.3rem; transition: 0.3s; color: #c084fc; }
+    .theme-toggle:hover { box-shadow: 0 0 18px #a855f7; background: rgba(124,58,237,0.2); }
+
+    .tabs { display: flex; flex-wrap: wrap; gap: 0.6rem 0.3rem; margin: 1.8rem 0 1.2rem; border-bottom: 1px solid rgba(124,58,237,0.2); padding-bottom: 0.8rem; }
+    .tab-btn { background: transparent; border: none; color: #a0a0c0; padding: 0.6rem 1.6rem; border-radius: 40px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: 0.25s; position: relative; }
+    .tab-btn.active { background: rgba(124, 58, 237, 0.2); color: #c084fc; box-shadow: 0 0 16px rgba(124,58,237,0.2); }
+    .tab-btn:hover { color: #d8b4fe; background: rgba(124,58,237,0.1); }
+    .tab-content { display: none; animation: fadeIn 0.35s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; }
+    @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .btn { background: linear-gradient(145deg, #7c3aed, #6d28d9); border: none; padding: 0.6rem 1.8rem; border-radius: 60px; font-weight: 600; color: white; cursor: pointer; transition: 0.25s; box-shadow: 0 0 10px rgba(124,58,237,0.2); display: inline-flex; align-items: center; gap: 8px; }
+    .btn:hover { box-shadow: 0 0 28px #a855f7; transform: scale(1.02); background: linear-gradient(145deg, #8b5cf6, #7c3aed); }
+    .btn-outline { background: transparent; border: 1px solid #7c3aed; color: #c084fc; box-shadow: none; }
+    .btn-outline:hover { background: rgba(124,58,237,0.15); box-shadow: 0 0 24px #a855f7; }
+
+    .dropzone { border: 2px dashed rgba(124,58,237,0.5); border-radius: 2rem; padding: 2.5rem 1rem; text-align: center; cursor: pointer; transition: 0.25s; background: rgba(0,0,0,0.2); }
+    .dropzone.dragover { border-color: #c084fc; background: rgba(124,58,237,0.08); box-shadow: 0 0 40px rgba(124,58,237,0.15); }
+    .file-list { display: flex; flex-direction: column; gap: 0.7rem; margin: 1.2rem 0; max-height: 320px; overflow-y: auto; padding-right: 6px; }
+    .file-item { background: rgba(0,0,0,0.25); border-radius: 1.2rem; padding: 0.7rem 1.2rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; border-left: 4px solid #7c3aed; }
+    body.light .file-item { background: rgba(200,190,240,0.2); }
+
+    .preview-img { width: 60px; height: 60px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(124,58,237,0.3); }
+    .flex { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; }
+    .flex-col { flex-direction: column; align-items: stretch; }
+    .mt-1 { margin-top: 1rem; }
+    .mb-1 { margin-bottom: 0.8rem; }
+    .gap-1 { gap: 1rem; }
+    .w-full { width: 100%; }
+    .text-sm { font-size: 0.9rem; opacity: 0.8; }
+
+    .range-slider { width: 100%; accent-color: #a855f7; }
+    .badge { background: rgba(124,58,237,0.25); padding: 0.2rem 0.8rem; border-radius: 40px; font-size: 0.75rem; }
+
+    .toast-container { position: fixed; bottom: 24px; right: 24px; display: flex; flex-direction: column; gap: 0.6rem; z-index: 9999; max-width: 360px; }
+    .toast { background: #1a0b2e; border-left: 6px solid #a855f7; backdrop-filter: blur(8px); padding: 0.8rem 1.4rem; border-radius: 1.2rem; color: #eee; box-shadow: 0 12px 40px rgba(0,0,0,0.6); animation: slideIn 0.3s ease; }
+    body.light .toast { background: #e8e0ff; color: #1a1a2e; border-left-color: #7c3aed; }
+
+    .slider-comparison { position: relative; width: 100%; max-width: 400px; overflow: hidden; border-radius: 16px; border: 1px solid rgba(124,58,237,0.3); }
+    .slider-comparison img { width: 100%; display: block; }
+    .slider-comparison .after { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid #c084fc; }
+    .slider-comparison .after img { width: 100%; height: 100%; object-fit: cover; }
+
+    input, select, textarea { background: rgba(0,0,0,0.3); border: 1px solid rgba(124,58,237,0.3); border-radius: 40px; padding: 0.5rem 1rem; color: #eee; font-family: inherit; }
+    body.light input, body.light select, body.light textarea { background: rgba(240,238,255,0.7); color: #1a1a2e; }
+    input:focus, select:focus { outline: 2px solid #a855f7; }
+    label { font-weight: 500; margin-right: 0.3rem; }
+
+    .footer { text-align: center; margin-top: 3rem; opacity: 0.5; font-size: 0.9rem; border-top: 1px solid rgba(124,58,237,0.1); padding-top: 2rem; }
+
+    /* particles */
+    #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
+  </style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+<div class="app">
+  <header class="glass">
+    <div class="logo"><span>🎬</span> Universal Media</div>
+    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="tab1">Конвертер</button>
+    <button class="tab-btn" data-tab="tab2">Сжатие</button>
+    <button class="tab-btn" data-tab="tab3">Редактор</button>
+    <button class="tab-btn" data-tab="tab4">Водяной знак</button>
+  </div>
+
+  <!-- ========== TAB 1 ========== -->
+  <div id="tab1" class="tab-content active">
+    <div class="glass">
+      <h3 style="margin-bottom:0.5rem;">🔄 Конвертер изображений</h3>
+      <div class="dropzone" id="dropzone1">📁 Перетащите файлы или нажмите для выбора (до 10)</div>
+      <input type="file" id="fileInput1" multiple accept="image/png,image/jpeg,image/webp,image/bmp,image/gif,image/heic" style="display:none">
+      <div class="file-list" id="fileList1"></div>
+      <button class="btn" id="downloadAllZip">⬇ Скачать всё (ZIP)</button>
+    </div>
+  </div>
+
+  <!-- ========== TAB 2 ========== -->
+  <div id="tab2" class="tab-content">
+    <div class="glass">
+      <h3>🗜 Сжатие изображений</h3>
+      <div class="dropzone" id="dropzone2">📁 Перетащите изображения для сжатия</div>
+      <input type="file" id="fileInput2" multiple accept="image/*" style="display:none">
+      <div class="flex gap-1 mt-1">
+        <label>Качество <span id="qualityVal">80</span>%</label>
+        <input type="range" id="qualityRange" class="range-slider" min="10" max="100" value="80">
+      </div>
+      <div class="flex gap-1">
+        <button class="btn btn-outline" data-preset="85">Соцсети (85%)</button>
+        <button class="btn btn-outline" data-preset="75">Веб (75%)</button>
+        <button class="btn btn-outline" data-preset="95">Макс (95%)</button>
+        <button class="btn btn-outline" data-preset="50">Сильное (50%)</button>
+      </div>
+      <div id="compressPreview" class="file-list"></div>
+      <button class="btn mt-1" id="compressAndDownload">⬇ Сжать и скачать</button>
+    </div>
+  </div>
+
+  <!-- ========== TAB 3 ========== -->
+  <div id="tab3" class="tab-content">
+    <div class="glass">
+      <h3>✏️ Редактор изображений</h3>
+      <div class="dropzone" id="dropzone3">📁 Загрузите изображение для редактирования</div>
+      <input type="file" id="fileInput3" accept="image/*" style="display:none">
+      <div class="grid-2 mt-1">
+        <div><strong>До</strong><img id="beforeEdit" src="" alt="before" style="width:100%;border-radius:16px;border:1px solid rgba(124,58,237,0.2);"></div>
+        <div><strong>После</strong><img id="afterEdit" src="" alt="after" style="width:100%;border-radius:16px;border:1px solid rgba(124,58,237,0.2);"></div>
+      </div>
+      <div class="flex flex-col gap-1 mt-1">
+        <div class="flex gap-1"><button class="btn btn-outline" id="cropBtn">Обрезать</button><button class="btn btn-outline" id="rotateRight">90°→</button><button class="btn btn-outline" id="rotateLeft">←90°</button><button class="btn btn-outline" id="flipH">↔</button><button class="btn btn-outline" id="flipV">↕</button></div>
+        <div class="flex gap-1"><button class="btn btn-outline" id="filterBW">Ч/Б</button><button class="btn btn-outline" id="filterSepia">Сепия</button><button class="btn btn-outline" id="filterNeon">Неон</button><button class="btn btn-outline" id="filterVintage">Винтаж</button></div>
+        <div class="flex gap-1"><label>Яркость</label><input type="range" id="brightnessRange" min="0" max="200" value="100" class="range-slider" style="width:120px;"></div>
+        <div class="flex gap-1"><label>Размытие</label><input type="range" id="blurRange" min="0" max="10" step="0.5" value="0" class="range-slider" style="width:120px;"></div>
+        <div class="flex gap-1"><label>Кисть</label><input type="color" id="brushColor" value="#a855f7"><input type="range" id="brushSize" min="2" max="20" value="6" class="range-slider" style="width:80px;"><button class="btn btn-outline" id="brushToggle">🖌 Вкл</button></div>
+        <div class="flex gap-1"><label>Текст</label><input type="text" id="textInput" placeholder="Текст"><button class="btn btn-outline" id="applyText">Добавить</button></div>
+        <div class="flex gap-1"><span>Стикеры:</span><button class="btn btn-outline" data-emoji="😀">😀</button><button class="btn btn-outline" data-emoji="😎">😎</button><button class="btn btn-outline" data-emoji="🔥">🔥</button><button class="btn btn-outline" data-emoji="⭐">⭐</button><button class="btn btn-outline" data-emoji="❤️">❤️</button><button class="btn btn-outline" data-emoji="👍">👍</button></div>
+        <button class="btn" id="undoEdit">↩ Отменить (Ctrl+Z)</button>
+        <button class="btn" id="downloadEdited">⬇ Скачать результат</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== TAB 4 ========== -->
+  <div id="tab4" class="tab-content">
+    <div class="glass">
+      <h3>💧 Водяной знак</h3>
+      <div class="dropzone" id="dropzone4">📁 Загрузите изображение</div>
+      <input type="file" id="fileInput4" accept="image/*" style="display:none">
+      <div class="flex gap-1 mt-1">
+        <label>Текст</label><input type="text" id="wmText" value="Universal Media">
+        <label>Прозрачность</label><input type="range" id="wmOpacity" min="0" max="10" step="1" value="5" class="range-slider" style="width:100px;">
+      </div>
+      <div class="flex gap-1">
+        <label>Позиция</label>
+        <select id="wmPosition"><option value="center">Центр</option><option value="top-left">Верхний левый</option><option value="bottom-right">Нижний правый</option><option value="random">Случайно</option></select>
+        <label>Размер</label><input type="range" id="wmSize" min="20" max="300" value="80" class="range-slider" style="width:100px;">
+        <label>Поворот</label><input type="range" id="wmRotate" min="0" max="360" value="0" class="range-slider" style="width:100px;">
+      </div>
+      <div class="flex gap-1"><label><input type="checkbox" id="wmTile"> Мозаичный</label><label><input type="checkbox" id="wmShadow" checked> Тень</label></div>
+      <button class="btn" id="applyWatermark">💧 Нанести</button>
+      <button class="btn" id="downloadWatermarked">⬇ Скачать</button>
+      <div class="mt-1"><img id="wmPreview" src="" alt="watermarked preview" style="max-width:100%;border-radius:16px;border:1px solid rgba(124,58,237,0.2);"></div>
+    </div>
+  </div>
+  <div class="footer">© 2026 Universal Media. Сделано для баланса вселенной by github.com/universal-uniq </div>
+</div>
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+  (function() {
+    // particles
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let w, h; function resize() { w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; }
+    window.addEventListener('resize', resize); resize();
+    const particles = Array.from({length: 80}, () => ({x:Math.random()*w, y:Math.random()*h, r:1+Math.random()*2, dx:(Math.random()-0.5)*0.4, dy:(Math.random()-0.5)*0.4}));
+    function drawParticles() { ctx.clearRect(0,0,w,h); particles.forEach(p=>{ p.x+=p.dx; p.y+=p.dy; if(p.x<0||p.x>w) p.dx*=-1; if(p.y<0||p.y>h) p.dy*=-1; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle='#a855f7'; ctx.shadowColor='#a855f7'; ctx.shadowBlur=12; ctx.fill(); }); requestAnimationFrame(drawParticles); }
+    drawParticles();
+
+    // theme
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', ()=> { document.body.classList.toggle('light'); themeBtn.textContent = document.body.classList.contains('light') ? '☀️' : '🌙'; });
+
+    // toast
+    function toast(msg) { const c=document.getElementById('toastContainer'); const t=document.createElement('div'); t.className='toast'; t.textContent=msg; c.appendChild(t); setTimeout(()=>t.remove(), 3500); }
+
+    // tabs
+    document.querySelectorAll('.tab-btn').forEach(btn=>{ btn.addEventListener('click', ()=>{ document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active')); document.getElementById(btn.dataset.tab).classList.add('active'); }); });
+
+    // ---------- helpers ----------
+    function loadImage(file) { return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=e=>{ const img=new Image(); img.onload=()=>res(img); img.onerror=rej; img.src=e.target.result; }; r.readAsDataURL(file); }); }
+    function dataURLtoBlob(dataURL) { const arr=dataURL.split(','); const mime=arr[0].match(/:(.*?);/)[1]; const bstr=atob(arr[1]); let n=bstr.length; const u8=new Uint8Array(n); while(n--) u8[n]=bstr.charCodeAt(n); return new Blob([u8], {type:mime}); }
+
+    // ---------- TAB 1: CONVERTER ----------
+    const drop1=document.getElementById('dropzone1'), fileInput1=document.getElementById('fileInput1'), fileList1=document.getElementById('fileList1');
+    let convertFiles=[];
+    drop1.addEventListener('click',()=>fileInput1.click());
+    drop1.addEventListener('dragover',e=>{e.preventDefault(); drop1.classList.add('dragover');});
+    drop1.addEventListener('dragleave',()=>drop1.classList.remove('dragover'));
+    drop1.addEventListener('drop',e=>{e.preventDefault(); drop1.classList.remove('dragover'); if(e.dataTransfer.files.length) handleConvertFiles(e.dataTransfer.files); });
+    fileInput1.addEventListener('change',()=>{ if(fileInput1.files.length) handleConvertFiles(fileInput1.files); });
+
+    function handleConvertFiles(files) { convertFiles=Array.from(files).slice(0,10); renderConvertList(); }
+    function renderConvertList() { fileList1.innerHTML=''; convertFiles.forEach((f,i)=>{ const div=document.createElement('div'); div.className='file-item'; const fmt=f.name.split('.').pop().toLowerCase(); const ext=[ 'png','jpg','jpeg','webp','bmp','gif','heic' ].includes(fmt)?fmt:'jpg';
+      div.innerHTML=`<span>${f.name} (${(f.size/1024).toFixed(1)} КБ)</span>
+        <select id="convFmt${i}"><option value="png">PNG</option><option value="jpg">JPG</option><option value="webp">WebP</option><option value="svg">SVG</option><option value="ico">ICO</option></select>
+        <button class="btn btn-outline" data-idx="${i}">Конвертировать</button>
+        <span id="convResult${i}"></span>`;
+      fileList1.appendChild(div);
+      const btn=div.querySelector('button');
+      btn.addEventListener('click', async ()=>{ const sel=document.getElementById(`convFmt${i}`); const format=sel.value; const resultSpan=document.getElementById(`convResult${i}`); try { const img=await loadImage(f); const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); cx.drawImage(img,0,0); let url; if(format==='svg') { const b64=c.toDataURL('image/png').split(',')[1]; url=`data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxpbWFnZSB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBocmVmPSJkYXRhOmltYWdlL3BuZztiYXNlNjQs${b64}Ii8+PC9zdmc+`; } else { url=c.toDataURL(`image/${format}`); } const blob=dataURLtoBlob(url); const sizeKB=(blob.size/1024).toFixed(1); resultSpan.innerHTML=`✅ ${sizeKB} КБ <a href="${url}" download="converted.${format}" class="btn btn-outline" style="padding:0.2rem 0.8rem;">⬇</a>`; } catch(e){ toast('Ошибка конвертации'); } });
+    }); }
+
+    document.getElementById('downloadAllZip').addEventListener('click', async ()=>{ if(convertFiles.length===0) return toast('Нет файлов'); const zip=new JSZip(); let count=0; for(let f of convertFiles){ const img=await loadImage(f); const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; c.getContext('2d').drawImage(img,0,0); const blob=await new Promise(r=>c.toBlob(r,'image/png')); zip.file(f.name.replace(/\.[^.]+$/,'.png'), blob); count++; } const z=await zip.generateAsync({type:'blob'}); const a=document.createElement('a'); a.href=URL.createObjectURL(z); a.download='converted_all.zip'; a.click(); toast('ZIP готов'); });
+
+    // ---------- TAB 2: COMPRESS ----------
+    const drop2=document.getElementById('dropzone2'), fileInput2=document.getElementById('fileInput2'), compressPreview=document.getElementById('compressPreview');
+    let compressFiles=[];
+    drop2.addEventListener('click',()=>fileInput2.click());
+    drop2.addEventListener('dragover',e=>{e.preventDefault(); drop2.classList.add('dragover');});
+    drop2.addEventListener('dragleave',()=>drop2.classList.remove('dragover'));
+    drop2.addEventListener('drop',e=>{e.preventDefault(); drop2.classList.remove('dragover'); if(e.dataTransfer.files.length) { compressFiles=Array.from(e.dataTransfer.files); renderCompressList(); } });
+    fileInput2.addEventListener('change',()=>{ if(fileInput2.files.length) { compressFiles=Array.from(fileInput2.files); renderCompressList(); } });
+    function renderCompressList(){ compressPreview.innerHTML=''; compressFiles.forEach((f,i)=>{ const div=document.createElement('div'); div.className='file-item'; div.innerHTML=`<span>${f.name} (${(f.size/1024).toFixed(1)} КБ)</span><span id="cmpRes${i}"></span>`; compressPreview.appendChild(div); }); }
+    document.querySelectorAll('[data-preset]').forEach(btn=>{ btn.addEventListener('click',()=>{ document.getElementById('qualityRange').value=btn.dataset.preset; document.getElementById('qualityVal').textContent=btn.dataset.preset; }); });
+    document.getElementById('qualityRange').addEventListener('input', function(){ document.getElementById('qualityVal').textContent=this.value; });
+    document.getElementById('compressAndDownload').addEventListener('click', async ()=>{ if(!compressFiles.length) return toast('Загрузите файлы'); const quality=parseInt(document.getElementById('qualityRange').value)/100; for(let i=0;i<compressFiles.length;i++){ const f=compressFiles[i]; try{ const img=await loadImage(f); const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; c.getContext('2d').drawImage(img,0,0); const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',quality)); const res=document.getElementById(`cmpRes${i}`); if(res) res.innerHTML=`✅ ${(blob.size/1024).toFixed(1)} КБ (${Math.round((1-blob.size/f.size)*100)}%)`; }catch(e){ toast('Ошибка сжатия'); } } });
+
+    // ---------- TAB 3: EDITOR ----------
+    let editImg=null, editCanvas=null, editCtx=null, history=[], historyIdx=-1, brushActive=false, brushColor='#a855f7', brushSize=6;
+    const drop3=document.getElementById('dropzone3'), fileInput3=document.getElementById('fileInput3'), beforeEdit=document.getElementById('beforeEdit'), afterEdit=document.getElementById('afterEdit');
+    drop3.addEventListener('click',()=>fileInput3.click());
+    drop3.addEventListener('dragover',e=>{e.preventDefault(); drop3.classList.add('dragover');});
+    drop3.addEventListener('dragleave',()=>drop3.classList.remove('dragover'));
+    drop3.addEventListener('drop',e=>{e.preventDefault(); drop3.classList.remove('dragover'); if(e.dataTransfer.files.length) loadEditFile(e.dataTransfer.files[0]); });
+    fileInput3.addEventListener('change',()=>{ if(fileInput3.files.length) loadEditFile(fileInput3.files[0]); });
+
+    function loadEditFile(file){ const r=new FileReader(); r.onload=e=>{ const img=new Image(); img.onload=()=>{ editImg=img; initEditCanvas(img); saveHistory(); }; img.src=e.target.result; }; r.readAsDataURL(file); }
+
+    function initEditCanvas(img){ const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); cx.drawImage(img,0,0); editCanvas=c; editCtx=cx; beforeEdit.src=img.src; afterEdit.src=editCanvas.toDataURL(); }
+
+    function saveHistory(){ if(!editCanvas) return; historyIdx++; if(historyIdx<history.length) history=history.slice(0,historyIdx); history.push(editCanvas.toDataURL()); if(history.length>10) history.shift(); afterEdit.src=editCanvas.toDataURL(); }
+
+    document.getElementById('undoEdit').addEventListener('click', ()=>{ if(historyIdx>0){ historyIdx--; const img=new Image(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); cx.drawImage(img,0,0); editCanvas=c; editCtx=cx; afterEdit.src=editCanvas.toDataURL(); }; img.src=history[historyIdx]; } });
+    document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='z'){ e.preventDefault(); document.getElementById('undoEdit').click(); } });
+
+    // filters
+    function applyFilter(fn){ if(!editCanvas) return; const img=new Image(); img.src=editCanvas.toDataURL(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); cx.drawImage(img,0,0); const data=cx.getImageData(0,0,c.width,c.height); fn(data); cx.putImageData(data,0,0); editCanvas=c; editCtx=cx; saveHistory(); }; }
+    document.getElementById('filterBW').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ const g=0.3*d.data[i]+0.59*d.data[i+1]+0.11*d.data[i+2]; d.data[i]=d.data[i+1]=d.data[i+2]=g; } }));
+    document.getElementById('filterSepia').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ const r=d.data[i],g=d.data[i+1],b=d.data[i+2]; d.data[i]=Math.min(255,r*0.393+g*0.769+b*0.189); d.data[i+1]=Math.min(255,r*0.349+g*0.686+b*0.168); d.data[i+2]=Math.min(255,r*0.272+g*0.534+b*0.131); } }));
+    document.getElementById('filterNeon').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ d.data[i]=Math.min(255,d.data[i]*2); d.data[i+1]=Math.min(255,d.data[i+1]*0.3); d.data[i+2]=Math.min(255,d.data[i+2]*1.5); } }));
+    document.getElementById('filterVintage').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ d.data[i]=Math.min(255,d.data[i]*1.2); d.data[i+1]=Math.min(255,d.data[i+1]*0.8); d.data[i+2]=Math.min(255,d.data[i+2]*0.6); } }));
+    document.getElementById('brightnessRange').addEventListener('input', function(){ const v=parseInt(this.value)/100; applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ d.data[i]*=v; d.data[i+1]*=v; d.data[i+2]*=v; } }); });
+    document.getElementById('blurRange').addEventListener('input', function(){ const v=parseInt(this.value); if(v===0) return; applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ const avg= (d.data[i]+d.data[i+1]+d.data[i+2])/3; d.data[i]=d.data[i+1]=d.data[i+2]=avg; } }); });
+
+    // rotate/flip
+    function transformCanvas(fn){ if(!editCanvas) return; const img=new Image(); img.src=editCanvas.toDataURL(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); fn(cx,img); editCanvas=c; editCtx=cx; saveHistory(); }; }
+    document.getElementById('rotateRight').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(img.width,0); cx.rotate(Math.PI/2); cx.drawImage(img,0,0); }));
+    document.getElementById('rotateLeft').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(0,img.height); cx.rotate(-Math.PI/2); cx.drawImage(img,0,0); }));
+    document.getElementById('flipH').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(img.width,0); cx.scale(-1,1); cx.drawImage(img,0,0); }));
+    document.getElementById('flipV').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(0,img.height); cx.scale(1,-1); cx.drawImage(img,0,0); }));
+
+    // brush
+    document.getElementById('brushToggle').addEventListener('click', function(){ brushActive=!brushActive; this.textContent=brushActive?'🖌 Выкл':'🖌 Вкл'; if(brushActive){ editCanvas.addEventListener('mousedown', brushStart); editCanvas.addEventListener('mousemove', brushMove); editCanvas.addEventListener('mouseup', brushEnd); }else{ editCanvas.removeEventListener('mousedown', brushStart); editCanvas.removeEventListener('mousemove', brushMove); editCanvas.removeEventListener('mouseup', brushEnd); } });
+    let brushDown=false;
+    function brushStart(e){ brushDown=true; brushDraw(e); }
+    function brushMove(e){ if(brushDown) brushDraw(e); }
+    function brushEnd(){ brushDown=false; saveHistory(); }
+    function brushDraw(e){ if(!editCanvas) return; const rect=editCanvas.getBoundingClientRect(); const scaleX=editCanvas.width/rect.width, scaleY=editCanvas.height/rect.height; const x=(e.clientX-rect.left)*scaleX, y=(e.clientY-rect.top)*scaleY; brushColor=document.getElementById('brushColor').value; brushSize=parseInt(document.getElementById('brushSize').value); editCtx.fillStyle=brushColor; editCtx.beginPath(); editCtx.arc(x,y,brushSize/2,0,Math.PI*2); editCtx.fill(); afterEdit.src=editCanvas.toDataURL(); }
+
+    // text
+    document.getElementById('applyText').addEventListener('click',()=>{ if(!editCanvas) return; const txt=document.getElementById('textInput').value||'Text'; editCtx.font='30px Arial'; editCtx.fillStyle='#c084fc'; editCtx.fillText(txt,50,50); saveHistory(); });
+    // stickers
+    document.querySelectorAll('[data-emoji]').forEach(b=>{ b.addEventListener('click',()=>{ if(!editCanvas) return; editCtx.font='48px sans-serif'; editCtx.fillText(b.dataset.emoji,60,80); saveHistory(); }); });
+
+    document.getElementById('downloadEdited').addEventListener('click',()=>{ if(!editCanvas) return; const a=document.createElement('a'); a.href=editCanvas.toDataURL('image/png'); a.download='edited.png'; a.click(); });
+
+    // ---------- TAB 4: WATERMARK ----------
+    let wmImg=null, wmCanvas=null, wmCtx=null;
+    const drop4=document.getElementById('dropzone4'), fileInput4=document.getElementById('fileInput4'), wmPreview=document.getElementById('wmPreview');
+    drop4.addEventListener('click',()=>fileInput4.click());
+    drop4.addEventListener('dragover',e=>{e.preventDefault(); drop4.classList.add('dragover');});
+    drop4.addEventListener('dragleave',()=>drop4.classList.remove('dragover'));
+    drop4.addEventListener('drop',e=>{e.preventDefault(); drop4.classList.remove('dragover'); if(e.dataTransfer.files.length) loadWmFile(e.dataTransfer.files[0]); });
+    fileInput4.addEventListener('change',()=>{ if(fileInput4.files.length) loadWmFile(fileInput4.files[0]); });
+
+    function loadWmFile(file){ const r=new FileReader(); r.onload=e=>{ const img=new Image(); img.onload=()=>{ wmImg=img; const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); cx.drawImage(img,0,0); wmCanvas=c; wmCtx=cx; wmPreview.src=c.toDataURL(); }; img.src=e.target.result; }; r.readAsDataURL(file); }
+
+    document.getElementById('applyWatermark').addEventListener('click',()=>{ if(!wmCanvas||!wmImg) return toast('Загрузите изображение'); const text=document.getElementById('wmText').value||'Universal Media'; const opacity=parseInt(document.getElementById('wmOpacity').value)/10; const pos=document.getElementById('wmPosition').value; const size=parseInt(document.getElementById('wmSize').value); const rotate=parseInt(document.getElementById('wmRotate').value); const tile=document.getElementById('wmTile').checked; const shadow=document.getElementById('wmShadow').checked;
+      const c=document.createElement('canvas'); c.width=wmCanvas.width; c.height=wmCanvas.height; const cx=c.getContext('2d'); cx.drawImage(wmCanvas,0,0); cx.globalAlpha=opacity; cx.textAlign='center'; cx.textBaseline='middle'; if(shadow){ cx.shadowColor='rgba(0,0,0,0.8)'; cx.shadowBlur=12; }
+      const positions=[[c.width/2,c.height/2],[size/2+20,size/2+20],[c.width-size/2-20,c.height-size/2-20],[Math.random()*c.width,Math.random()*c.height]];
+      const p=pos==='center'?0:pos==='top-left'?1:pos==='bottom-right'?2:3;
+      if(tile){ for(let x=0;x<c.width;x+=size+40) for(let y=0;y<c.height;y+=size+40){ cx.save(); cx.translate(x,y); cx.rotate(rotate*Math.PI/180); cx.font=`${size}px sans-serif`; cx.fillStyle='#c084fc'; cx.fillText(text,0,0); cx.restore(); } } else { cx.save(); cx.translate(positions[p][0],positions[p][1]); cx.rotate(rotate*Math.PI/180); cx.font=`${size}px sans-serif`; cx.fillStyle='#c084fc'; cx.fillText(text,0,0); cx.restore(); }
+      wmPreview.src=c.toDataURL(); wmCanvas=c; wmCtx=cx; toast('Водяной знак нанесён');
+    });
+    document.getElementById('downloadWatermarked').addEventListener('click',()=>{ if(!wmCanvas) return; const a=document.createElement('a'); a.href=wmCanvas.toDataURL('image/png'); a.download='watermarked.png'; a.click(); });
+
+    // init
+    renderConvertList();
+  })();
+</script>
+</body>
+</html>
