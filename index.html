@@ -17,7 +17,6 @@
     body.light ::-webkit-scrollbar-thumb { background: #7c3aed; }
 
     .app { max-width: 1300px; margin: 0 auto; padding: 1rem 1.5rem 2rem; }
-    /* glass */
     .glass { background: rgba(18, 18, 30, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(124, 58, 237, 0.35); border-radius: 2rem; box-shadow: 0 12px 40px rgba(0,0,0,0.6); padding: 1.5rem 2rem; transition: 0.3s; }
     body.light .glass { background: rgba(240, 238, 255, 0.7); border-color: rgba(124, 58, 237, 0.4); box-shadow: 0 8px 30px rgba(100, 60, 200, 0.15); }
 
@@ -78,7 +77,6 @@
 
     .footer { text-align: center; margin-top: 3rem; opacity: 0.5; font-size: 0.9rem; border-top: 1px solid rgba(124,58,237,0.1); padding-top: 2rem; }
 
-    /* particles */
     #particles-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
   </style>
 </head>
@@ -175,7 +173,7 @@
       <div class="mt-1"><img id="wmPreview" src="" alt="watermarked preview" style="max-width:100%;border-radius:16px;border:1px solid rgba(124,58,237,0.2);"></div>
     </div>
   </div>
-  <div class="footer">© 2026 Universal Media. Сделано для баланса вселенной by github.com/universal-uniq </div>
+  <div class="footer">© 2026 Universal Media. Сделано для вайба by  https://github.com/universal-uniq </div>
 </div>
 <div class="toast-container" id="toastContainer"></div>
 
@@ -215,7 +213,7 @@
     fileInput1.addEventListener('change',()=>{ if(fileInput1.files.length) handleConvertFiles(fileInput1.files); });
 
     function handleConvertFiles(files) { convertFiles=Array.from(files).slice(0,10); renderConvertList(); }
-    function renderConvertList() { fileList1.innerHTML=''; convertFiles.forEach((f,i)=>{ const div=document.createElement('div'); div.className='file-item'; const fmt=f.name.split('.').pop().toLowerCase(); const ext=[ 'png','jpg','jpeg','webp','bmp','gif','heic' ].includes(fmt)?fmt:'jpg';
+    function renderConvertList() { fileList1.innerHTML=''; convertFiles.forEach((f,i)=>{ const div=document.createElement('div'); div.className='file-item'; const fmt=f.name.split('.').pop().toLowerCase(); 
       div.innerHTML=`<span>${f.name} (${(f.size/1024).toFixed(1)} КБ)</span>
         <select id="convFmt${i}"><option value="png">PNG</option><option value="jpg">JPG</option><option value="webp">WebP</option><option value="svg">SVG</option><option value="ico">ICO</option></select>
         <button class="btn btn-outline" data-idx="${i}">Конвертировать</button>
@@ -227,7 +225,7 @@
 
     document.getElementById('downloadAllZip').addEventListener('click', async ()=>{ if(convertFiles.length===0) return toast('Нет файлов'); const zip=new JSZip(); let count=0; for(let f of convertFiles){ const img=await loadImage(f); const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; c.getContext('2d').drawImage(img,0,0); const blob=await new Promise(r=>c.toBlob(r,'image/png')); zip.file(f.name.replace(/\.[^.]+$/,'.png'), blob); count++; } const z=await zip.generateAsync({type:'blob'}); const a=document.createElement('a'); a.href=URL.createObjectURL(z); a.download='converted_all.zip'; a.click(); toast('ZIP готов'); });
 
-    // ---------- TAB 2: COMPRESS ----------
+    // ---------- TAB 2: COMPRESS (ИСПРАВЛЕННАЯ ВЕРСИЯ) ----------
     const drop2=document.getElementById('dropzone2'), fileInput2=document.getElementById('fileInput2'), compressPreview=document.getElementById('compressPreview');
     let compressFiles=[];
     drop2.addEventListener('click',()=>fileInput2.click());
@@ -235,10 +233,88 @@
     drop2.addEventListener('dragleave',()=>drop2.classList.remove('dragover'));
     drop2.addEventListener('drop',e=>{e.preventDefault(); drop2.classList.remove('dragover'); if(e.dataTransfer.files.length) { compressFiles=Array.from(e.dataTransfer.files); renderCompressList(); } });
     fileInput2.addEventListener('change',()=>{ if(fileInput2.files.length) { compressFiles=Array.from(fileInput2.files); renderCompressList(); } });
-    function renderCompressList(){ compressPreview.innerHTML=''; compressFiles.forEach((f,i)=>{ const div=document.createElement('div'); div.className='file-item'; div.innerHTML=`<span>${f.name} (${(f.size/1024).toFixed(1)} КБ)</span><span id="cmpRes${i}"></span>`; compressPreview.appendChild(div); }); }
-    document.querySelectorAll('[data-preset]').forEach(btn=>{ btn.addEventListener('click',()=>{ document.getElementById('qualityRange').value=btn.dataset.preset; document.getElementById('qualityVal').textContent=btn.dataset.preset; }); });
-    document.getElementById('qualityRange').addEventListener('input', function(){ document.getElementById('qualityVal').textContent=this.value; });
-    document.getElementById('compressAndDownload').addEventListener('click', async ()=>{ if(!compressFiles.length) return toast('Загрузите файлы'); const quality=parseInt(document.getElementById('qualityRange').value)/100; for(let i=0;i<compressFiles.length;i++){ const f=compressFiles[i]; try{ const img=await loadImage(f); const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; c.getContext('2d').drawImage(img,0,0); const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',quality)); const res=document.getElementById(`cmpRes${i}`); if(res) res.innerHTML=`✅ ${(blob.size/1024).toFixed(1)} КБ (${Math.round((1-blob.size/f.size)*100)}%)`; }catch(e){ toast('Ошибка сжатия'); } } });
+    
+    function renderCompressList(){ 
+      compressPreview.innerHTML=''; 
+      compressFiles.forEach((f,i)=>{ 
+        const div=document.createElement('div'); 
+        div.className='file-item'; 
+        div.innerHTML=`<span>${f.name} (${(f.size/1024).toFixed(1)} КБ)</span><span id="cmpRes${i}"></span>`; 
+        compressPreview.appendChild(div); 
+      }); 
+    }
+    
+    document.querySelectorAll('[data-preset]').forEach(btn=>{ 
+      btn.addEventListener('click',()=>{ 
+        document.getElementById('qualityRange').value=btn.dataset.preset; 
+        document.getElementById('qualityVal').textContent=btn.dataset.preset; 
+      }); 
+    });
+    
+    document.getElementById('qualityRange').addEventListener('input', function(){ 
+      document.getElementById('qualityVal').textContent=this.value; 
+    });
+    
+    document.getElementById('compressAndDownload').addEventListener('click', async ()=>{ 
+      if(!compressFiles.length) {
+        toast('⚠️ Загрузите файлы для сжатия');
+        return;
+      }
+      
+      const quality = parseInt(document.getElementById('qualityRange').value) / 100;
+      let compressedCount = 0;
+      
+      for(let i=0; i<compressFiles.length; i++){ 
+        const f = compressFiles[i];
+        try { 
+          const img = await loadImage(f); 
+          const c = document.createElement('canvas'); 
+          c.width = img.width; 
+          c.height = img.height; 
+          const ctx = c.getContext('2d'); 
+          ctx.drawImage(img, 0, 0); 
+          
+          // Создаем сжатый blob
+          const blob = await new Promise(resolve => c.toBlob(resolve, 'image/jpeg', quality));
+          if(!blob) throw new Error('Не удалось создать blob');
+          
+          // Сохраняем результат
+          const resSpan = document.getElementById(`cmpRes${i}`);
+          if(resSpan) {
+            const originalSize = f.size;
+            const newSize = blob.size;
+            const percent = Math.round((1 - newSize / originalSize) * 100);
+            resSpan.innerHTML = `✅ ${(newSize/1024).toFixed(1)} КБ (${percent}% сжатия)`;
+            
+            // Создаем ссылку для скачивания
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = f.name.replace(/\.[^.]+$/, '') + '_compressed.jpg';
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            
+            // Скачиваем файл
+            if(i === 0) {
+              // Скачиваем только первый файл автоматически, остальные через кнопку
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            }
+            compressedCount++;
+          }
+        } catch(e) { 
+          console.error(e);
+          toast(`❌ Ошибка сжатия: ${f.name}`);
+        } 
+      }
+      
+      if(compressedCount > 0) {
+        toast(`✅ Сжато ${compressedCount} файлов`);
+      } else {
+        toast('❌ Не удалось сжать файлы');
+      }
+    });
 
     // ---------- TAB 3: EDITOR ----------
     let editImg=null, editCanvas=null, editCtx=null, history=[], historyIdx=-1, brushActive=false, brushColor='#a855f7', brushSize=6;
@@ -258,23 +334,20 @@
     document.getElementById('undoEdit').addEventListener('click', ()=>{ if(historyIdx>0){ historyIdx--; const img=new Image(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); cx.drawImage(img,0,0); editCanvas=c; editCtx=cx; afterEdit.src=editCanvas.toDataURL(); }; img.src=history[historyIdx]; } });
     document.addEventListener('keydown',e=>{ if((e.ctrlKey||e.metaKey)&&e.key==='z'){ e.preventDefault(); document.getElementById('undoEdit').click(); } });
 
-    // filters
     function applyFilter(fn){ if(!editCanvas) return; const img=new Image(); img.src=editCanvas.toDataURL(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); cx.drawImage(img,0,0); const data=cx.getImageData(0,0,c.width,c.height); fn(data); cx.putImageData(data,0,0); editCanvas=c; editCtx=cx; saveHistory(); }; }
     document.getElementById('filterBW').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ const g=0.3*d.data[i]+0.59*d.data[i+1]+0.11*d.data[i+2]; d.data[i]=d.data[i+1]=d.data[i+2]=g; } }));
     document.getElementById('filterSepia').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ const r=d.data[i],g=d.data[i+1],b=d.data[i+2]; d.data[i]=Math.min(255,r*0.393+g*0.769+b*0.189); d.data[i+1]=Math.min(255,r*0.349+g*0.686+b*0.168); d.data[i+2]=Math.min(255,r*0.272+g*0.534+b*0.131); } }));
     document.getElementById('filterNeon').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ d.data[i]=Math.min(255,d.data[i]*2); d.data[i+1]=Math.min(255,d.data[i+1]*0.3); d.data[i+2]=Math.min(255,d.data[i+2]*1.5); } }));
     document.getElementById('filterVintage').addEventListener('click',()=>applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ d.data[i]=Math.min(255,d.data[i]*1.2); d.data[i+1]=Math.min(255,d.data[i+1]*0.8); d.data[i+2]=Math.min(255,d.data[i+2]*0.6); } }));
     document.getElementById('brightnessRange').addEventListener('input', function(){ const v=parseInt(this.value)/100; applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ d.data[i]*=v; d.data[i+1]*=v; d.data[i+2]*=v; } }); });
-    document.getElementById('blurRange').addEventListener('input', function(){ const v=parseInt(this.value); if(v===0) return; applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ const avg= (d.data[i]+d.data[i+1]+d.data[i+2])/3; d.data[i]=d.data[i+1]=d.data[i+2]=avg; } }); });
+    document.getElementById('blurRange').addEventListener('input', function(){ const v=parseInt(this.value); if(v===0) return; applyFilter(d=>{ for(let i=0;i<d.data.length;i+=4){ const avg=(d.data[i]+d.data[i+1]+d.data[i+2])/3; d.data[i]=d.data[i+1]=d.data[i+2]=avg; } }); });
 
-    // rotate/flip
     function transformCanvas(fn){ if(!editCanvas) return; const img=new Image(); img.src=editCanvas.toDataURL(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=img.width; c.height=img.height; const cx=c.getContext('2d'); fn(cx,img); editCanvas=c; editCtx=cx; saveHistory(); }; }
     document.getElementById('rotateRight').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(img.width,0); cx.rotate(Math.PI/2); cx.drawImage(img,0,0); }));
     document.getElementById('rotateLeft').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(0,img.height); cx.rotate(-Math.PI/2); cx.drawImage(img,0,0); }));
     document.getElementById('flipH').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(img.width,0); cx.scale(-1,1); cx.drawImage(img,0,0); }));
     document.getElementById('flipV').addEventListener('click',()=>transformCanvas((cx,img)=>{ cx.translate(0,img.height); cx.scale(1,-1); cx.drawImage(img,0,0); }));
 
-    // brush
     document.getElementById('brushToggle').addEventListener('click', function(){ brushActive=!brushActive; this.textContent=brushActive?'🖌 Выкл':'🖌 Вкл'; if(brushActive){ editCanvas.addEventListener('mousedown', brushStart); editCanvas.addEventListener('mousemove', brushMove); editCanvas.addEventListener('mouseup', brushEnd); }else{ editCanvas.removeEventListener('mousedown', brushStart); editCanvas.removeEventListener('mousemove', brushMove); editCanvas.removeEventListener('mouseup', brushEnd); } });
     let brushDown=false;
     function brushStart(e){ brushDown=true; brushDraw(e); }
@@ -282,9 +355,7 @@
     function brushEnd(){ brushDown=false; saveHistory(); }
     function brushDraw(e){ if(!editCanvas) return; const rect=editCanvas.getBoundingClientRect(); const scaleX=editCanvas.width/rect.width, scaleY=editCanvas.height/rect.height; const x=(e.clientX-rect.left)*scaleX, y=(e.clientY-rect.top)*scaleY; brushColor=document.getElementById('brushColor').value; brushSize=parseInt(document.getElementById('brushSize').value); editCtx.fillStyle=brushColor; editCtx.beginPath(); editCtx.arc(x,y,brushSize/2,0,Math.PI*2); editCtx.fill(); afterEdit.src=editCanvas.toDataURL(); }
 
-    // text
     document.getElementById('applyText').addEventListener('click',()=>{ if(!editCanvas) return; const txt=document.getElementById('textInput').value||'Text'; editCtx.font='30px Arial'; editCtx.fillStyle='#c084fc'; editCtx.fillText(txt,50,50); saveHistory(); });
-    // stickers
     document.querySelectorAll('[data-emoji]').forEach(b=>{ b.addEventListener('click',()=>{ if(!editCanvas) return; editCtx.font='48px sans-serif'; editCtx.fillText(b.dataset.emoji,60,80); saveHistory(); }); });
 
     document.getElementById('downloadEdited').addEventListener('click',()=>{ if(!editCanvas) return; const a=document.createElement('a'); a.href=editCanvas.toDataURL('image/png'); a.download='edited.png'; a.click(); });
