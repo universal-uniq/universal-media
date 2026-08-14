@@ -72,7 +72,7 @@ Universal Media — мощный онлайн-редактор изображе�
 ### Локальный запуск
 ```bash
 # Клонируйте репозиторий
-git clone https://github.com/your-username/universal-media.git
+git clone https://github.com/universal-uniq/universal-media.git
 
 # Откройте index.html в браузере
 cd universal-media
