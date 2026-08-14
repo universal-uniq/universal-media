@@ -8,8 +8,6 @@ Universal Media — мощный онлайн-редактор изображе�
 **Универсальный инструмент для работы с изображениями прямо в браузере**
 
 [![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Online-brightgreen)](https://your-username.github.io/universal-media/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Made with](https://img.shields.io/badge/Made%20with-JavaScript-purple)](https://developer.mozilla.org/ru/docs/Web/JavaScript)
 
 ---
 
