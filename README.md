@@ -1,1 +1,2 @@
-# universal-media - link universal-uniq.github.io/universal-media/
+# universal-media
+universal-uniq.github.io/universal-media/
